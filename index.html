@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="File Manager interface for managing website files efficiently."
+    />
+    <meta name="robots" content="index, follow" />
+    <title>Tambahkan file</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+      @layer utilities {
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://atugatran.github.io/FontAwesome6Pro/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-50 h-screen">
+    <div
+      class="flex w-full overflow-hidden h-full"
+      x-data="{ isMobile: window.innerWidth <= 925, sidenavOpen: false}"
+      x-init="() => window.addEventListener('resize', () => isMobile = window.innerWidth <= 925)"
+    >
+      <!-- Sidebar -->
+      <aside
+        :class="isMobile ? 'absolute z-30 bottom-0 top-0 left-0' : ''"
+        x-show="!isMobile || sidenavOpen"
+        @click.outside="sidenavOpen = false"
+        class="w-60 bg-gray-800 text-gray-200 flex flex-col flex-nowrap"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-8 border-b border-gray-500"
+        >
+          <a class="text-2xl font-semibold" href="">E-arsip Dinsos </a>
+          <button
+            x-show="isMobile"
+            @click="sidenavOpen = false"
+            class="text-gray-400 hover:text-gray-200"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-2 space-y-2 mt-10">
+          <div>
+            <p class="text-gray-400 text-xs uppercase font-bold pl-4">Main</p>
+            <ul class="space-y-2 mt-2">
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center px-4 py-2 rounded-md bg-gray-700"
+                  ><i class="fas fa-home mr-3" aria-hidden="true"></i
+                  ><span>Dashboard</span></a
+                >
+              </li>
+              <li x-data="{open:false}">
+                <a
+                  @click.prevent="open = !open"
+                  href="#"
+                  class="flex items-center px-4 py-2 rounded-md hover:bg-gray-700"
+                >
+                  <i
+                    :class="open ? 'fa-chevron-down' : 'fa-chevron-right' "
+                    class="fas mr-3 duration-100 ease-in-out transition-all"
+                    aria-hidden="true"
+                  ></i>
+                  <i class="fas fa-folder mr-3" aria-hidden="true"></i
+                  ><span>Tabel-Tabel</span>
+                </a>
+                <ul
+                  x-show="open"
+                  @click.away="open = false"
+                  class="py-2 rounded-md mt-1 w-full z-10 pl-6 bg-gray-800"
+                  x-transition:enter="transition ease-out duration-300"
+                  x-transition:enter-start="opacity-0 transform scale-90"
+                  x-transition:enter-end="opacity-100 transform scale-100"
+                  x-transition:leave="transition ease-in duration-200"
+                  x-transition:leave-start="opacity-100 transform scale-100"
+                  x-transition:leave-end="opacity-0 transform scale-90"
+                >
+                  <li
+                    class="hover:bg-gray-600 focus:bg-gray-700 w-full transition duration-300 ease-in-out"
+                  >
+                    <a
+                      href="#"
+                      class="flex items-center py-2 pl-2 focus:outline-none"
+                    >
+                      Pengguna
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-gray-400 text-xs uppercase font-bold pl-4">Tools</p>
+            <ul class="space-y-2 mt-2">
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center px-4 py-2 rounded-md hover:bg-gray-700"
+                  ><i class="fas fa-trash mr-3" aria-hidden="true"></i
+                  ><span>File sampah </span></a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center px-4 py-2 rounded-md hover:bg-gray-700"
+                  ><i class="fas fa-trash-alt mr-3" aria-hidden="true"></i
+                  ><span>Trash</span></a
+                >
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Mobile Hamburger Button -->
+
+      <!-- Main Content -->
+      <div class="flex w-full p-4 bg-gray-100 box-border shadow-lg rounded-lg">
+        <!-- Header -->
+        <div class="w-full flex-1 flex flex-col h-fit">
+          <header class="flex flex-1 justify-between mb-6 relative">
+            <nav class="flex-1 h-fit relative fixed px-4">
+              <ul
+                class="flex items-center justify-between"
+                x-data="{openSettings:false}"
+              >
+                <li class="">
+                  <button
+                    x-show="isMobile && !sidenavOpen"
+                    @click="sidenavOpen = true"
+                    class="text-white bg-slate-700 hover:bg-slate ease-in-out duration-100 transition-all hover:scale-110 px-3 py-1 rounded-full shadow-lg"
+                  >
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                    <span class="sr-only">Open Navigation</span>
+                  </button>
+                </li>
+                <li class="basis-64 lg:basis-96">
+                  <form
+                    action=""
+                    class="flex-1 max-sm:scale-95"
+                    x-data="{isFocused:false}"
+                  >
+                    <div
+                      :class="isFocused ? 'border-gray-400  shadow-sm' : 'border-gray-400' "
+                      class="flex-1 bg-white flex border px-4 rounded-xl focus-within:ring focus-within:ring-purple-500 font-medium text-gray-200 gap-4 py-2"
+                    >
+                      <label for="searching">
+                        <i
+                          :class="isFocused ? 'text-gray-500' : 'text-gray-300' "
+                          class="fa-sharp fa-solid fa-magnifying-glass"
+                          x-transition
+                        ></i>
+                      </label>
+                      <input
+                        type="search"
+                        name="searching"
+                        class="flex-1 outline-none text-purple-800 bg-opacity-0 bg-transparent"
+                        placeholder="Nama folder,File,dan lain-lain ..."
+                        @focus="isFocused = true"
+                        @blur="isFocused = false"
+                      />
+                    </div>
+                  </form>
+                </li>
+                <li class="relative">
+                  <button
+                    :class="!isMobile || sidenavOpen ? ' focus-within:text-gray-600' : ''"
+                    class="text-gray-400 hover:text-gray-600 rounded-full"
+                    x-transition
+                    @click="openSettings = !openSettings"
+                  >
+                    <div class="flex items-center justify-center h-fit gap-8">
+                      <i
+                        :class="isMobile ? 'fa-solid fa-ellipsis-vertical' : 'fa-solid fa-user' "
+                      ></i>
+                      <span
+                        :class="!isMobile && sidenavOpen ? '' : 'hidden'"
+                        class="lg:block"
+                        >Admin</span
+                      >
+                      <i
+                        :class="!isMobile && sidenavOpen ? '' : 'hidden'"
+                        class="lg:block fas fa-chevron-down"
+                      ></i>
+                    </div>
+                  </button>
+                  <div
+                    x-show="openSettings"
+                    @click.outside="openSettings = false"
+                    class="absolute top-10 right-0 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-20 text-sm"
+                  >
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100"
+                      >Settings</a
+                    >
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100"
+                      >Change Avatar</a
+                    >
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100"
+                      >Logout</a
+                    >
+                  </div>
+                </li>
+              </ul>
+            </nav>
+          </header>
+
+          <main class="w-full flex-1 px-6">
+            <h1
+              class="text-center md:text-left text-4xl font-semibold py-4 md:py-6 text-purple-900"
+            >
+              Halaman Dashboard
+            </h1>
+            <nav
+              class="flex pl-2 scale-100 max-md:scale-75 justify-center md:justify-start flex-wrap"
+              aria-label="Breadcrumb"
+            >
+              <ol
+                class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse"
+              >
+                <li
+                  class="flex items-center text-gray-500 font-light text-sm"
+                  aria-current="page"
+                >
+                  <i class="fa-sharp fa-solid fa-house"></i>
+                  <span class="ms-1 text-sm font-medium md:ms-2"
+                    >Halaman Dashboard</span
+                  >
+                </li>
+              </ol>
+            </nav>
+            <section class="mt-10 rounded-lg shadow px-8 py-8 bg-white">
+              <div
+                class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4"
+              >
+                <form
+                  enctype="multipart/form-data"
+                  method="post"
+                  @submit.prevent="validateFile"
+                >
+                  <label
+                    class="p-2 md:px-4 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 focus:outline-none focus:ring focus:ring-purple-300 flex gap-4 items-center cursor-pointer"
+                  >
+                    <i class="fa-sharp fa-solid fa-plus"></i>
+                    <span>Tambah Berkas</span>
+                    <input
+                      id="fileInput"
+                      type="file"
+                      name="file"
+                      class="hidden"
+                      @change="fileChosen"
+                      accept=".pdf"
+                    />
+                  </label>
+                </form>
+
+                <!-- Filter Dropdown -->
+                <div
+                  id="date-range-picker"
+                  date-rangepicker
+                  class="flex items-center"
+                >
+                  <div class="relative">
+                    <div
+                      class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+                    >
+                      <svg
+                        class="w-4 h-4 text-gray-500"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      id="datepicker-range-start"
+                      name="start"
+                      type="text"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full ps-10 p-2.5"
+                      placeholder="Select date start"
+                    />
+                  </div>
+                  <span class="mx-4 text-gray-500">to</span>
+                  <div class="relative">
+                    <div
+                      class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+                    >
+                      <svg
+                        class="w-4 h-4 text-gray-500"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      id="datepicker-range-end"
+                      name="end"
+                      type="text"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full ps-10 p-2.5"
+                      placeholder="Select date end"
+                    />
+                  </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative w-full sm:w-auto">
+                  <input
+                    type="text"
+                    placeholder="Cari..."
+                    class="w-full px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                  />
+                  <button
+                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-purple-600"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 16l2-2m2-2l2-2m-2-2a7 7 0 110 14 7 7 0 010-14z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto shadow-md rounded-lg">
+                <table
+                  class="min-w-full border-collapse bg-gray-50 text-sm text-left text-gray-700"
+                >
+                  <thead
+                    class="bg-gradient-to-r from-purple-600 to-purple-800 text-white"
+                  >
+                    <tr>
+                      <th
+                        class="px-6 py-3 text-xs font-semibold uppercase tracking-wider flex items-center gap-2"
+                      >
+                        <input
+                          type="checkbox"
+                          id="pilihsemua"
+                          class="form-checkbox h-4 w-4"
+                        />
+                        <label for="pilihsemua">Pilih Semua</label>
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-semibold uppercase tracking-wider"
+                      >
+                        Nama File
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-semibold uppercase tracking-wider"
+                      >
+                        Format File
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-semibold uppercase tracking-wider"
+                      >
+                        Author
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-semibold uppercase tracking-wider"
+                      >
+                        Tanggal Diupload
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-semibold uppercase tracking-wider"
+                      >
+                        Alamat File
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-300">
+                    <tr class="hover:bg-purple-50">
+                      <td class="px-6 py-4">
+                        <input type="checkbox" class="form-checkbox h-4 w-4" />
+                      </td>
+                      <td class="px-6 py-4">
+                        <a href="#" class="text-purple-500">..</a>
+                      </td>
+                      <td class="px-6 py-4">Folder</td>
+                      <td class="px-6 py-4">System</td>
+                      <td class="px-6 py-4">Jan 9, 2024 07:34 AM</td>
+                      <td class="px-6 py-4">/home/httpdocs</td>
+                    </tr>
+                    <tr class="bg-purple-50 hover:bg-purple-100">
+                      <td class="px-6 py-4">
+                        <input type="checkbox" class="form-checkbox h-4 w-4" />
+                      </td>
+                      <td class="px-6 py-4">
+                        <a href="#" class="text-purple-500">index.html</a>
+                      </td>
+                      <td class="px-6 py-4">HTML</td>
+                      <td class="px-6 py-4">Admin</td>
+                      <td class="px-6 py-4">Jan 9, 2024 07:34 AM</td>
+                      <td class="px-6 py-4">/home/httpdocs/index.html</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+      <div
+        class="hidden basis-72 flex items-center h-screen"
+        x-data="fileUpload()"
+      ></div>
+    </div>
+    <script>
+      function fileUpload() {
+        return {
+          file: null,
+          fileChosen(event) {
+            this.file = event.target.files[0];
+          },
+          validateFile() {
+            if (this.file) {
+              const fileName = this.file.name;
+              const fileExtension = fileName.split(".").pop().toLowerCase();
+              if (fileExtension === "doc") {
+                Swal.fire({
+                  icon: "warning",
+                  title: "File tidak bisa di upload",
+                  text: "File tersebut berformat doc. Silahkan di ekstrak terlebih dahulu.",
+                });
+              } else if (fileExtension !== "pdf") {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Format tidak didukung.",
+                });
+              } else {
+                // If the file is valid, you can submit the form or perform another action here
+                Swal.fire({
+                  icon: "success",
+                  title: "File valid",
+                  text: "File berhasil di upload.",
+                });
+              }
+            }
+          },
+        };
+      }
+    </script>
+  </body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
